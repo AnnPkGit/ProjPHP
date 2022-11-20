@@ -12,6 +12,7 @@
     <a href="/fundamentals">Основы PHP</a><br/>
     <a href="/layout">Шаблонизация</a><br/>
     <a href="/home">Домой</a><br/>
+    <a href="/db">DB</a><br/>
 
 
     <?php
@@ -32,6 +33,9 @@
 
     case 'basics': 
         include "basics.php" ;
+        break ;
+    case 'db': 
+        include "db.php" ;
         break ;
 
     default : 
