@@ -7,13 +7,13 @@
     <title>PHP SITE</title>
 </head>
 <body>
-
+    <img src="/img/php.png" alt="logo" style ="width: 100px; height: 100px"/><br/>
     <a href="/basics">Введение PHP</a><br/>
     <a href="/fundamentals">Основы PHP</a><br/>
     <a href="/layout">Шаблонизация</a><br/>
     <a href="/home">Домой</a><br/>
     <a href="/db">DB</a><br/>
-
+    <a href="/formdata">formdata</a><br/>
 
     <?php
     switch( $path_parts[1] ) {
@@ -36,6 +36,9 @@
         break ;
     case 'db': 
         include "db.php" ;
+        break ;
+    case 'formdata': 
+        include "formdata.php" ;
         break ;
 
     default : 
