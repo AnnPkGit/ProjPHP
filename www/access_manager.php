@@ -15,6 +15,16 @@ if( is_file( $local_path ) ) {          // запрос - существующи
 
 $path_parts = explode( '/', $path ) ;    // ~split - разбивает строку по разделителю
 
+//Middleware
+include "dbms.php" ;
+if( empty ($connection) ) {
+   echo "DB error";
+   exit;
+}
+include "auth.php" ;
+
+
+//View
 include "_layout.php" ;
 
 function flush_file( $filename ) {
