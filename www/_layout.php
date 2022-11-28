@@ -14,6 +14,7 @@
     <a href="/home">Домой</a><br/>
     <a href="/db">DB</a><br/>
     <a href="/formdata">formdata</a><br/>
+    <a href="/regestration">Регистрация</a><br/>
 
     <?php if( is_array( $_AUTH ) ) { ?>
             <b>Hello</b>
@@ -51,6 +52,10 @@
     case 'formdata': 
         include "formdata.php" ;
         break ;
+    case 'regestration': 
+        include "regestration.php" ;
+        break ;
+    
 
     default : 
         echo "404" ;
