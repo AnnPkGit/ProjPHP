@@ -52,41 +52,15 @@
     на постоянной основе, то его необходимо перенести (скопировать)
     в постоянную папку. 
 </p>
-<?php 
-$errors_array;
-if( isset( $_FILES['formfile'] ) ) {        // передача есть
-
-    $errors_array = "";
-    $filename = $_FILES['formfile']['name'] ;
-    $pos = strrpos( $filename, '.' ) ;         
-    $ext = substr( $filename, $pos + 1 ) ;  
-
-    if( $ext === "png" || $ext === "jpg" || $ext === "gif")
-    {
-        if( $_FILES['formfile']['error'] === 0 ) {    // нет ошибки
-            if( $_FILES['formfile']['size'] > 0 ) {   // есть данные
-                move_uploaded_file( 
-                    $_FILES['formfile']['tmp_name'],
-                    './uploads/' . $_FILES['formfile']['name'] 
-                ) ;
-            }
-            else
-            {
-                $errors_array = "File's size is too small" ;
-            }
-        }
-        else
-        {
-            $errors_array = "File contains an error" ;
+<?php if( isset( $_FILES['formfile'] ) ) {        // передача есть
+    if( $_FILES['formfile']['error'] === 0 ) {    // нет ошибки
+        if( $_FILES['formfile']['size'] > 0 ) {   // есть данные
+            move_uploaded_file( 
+                $_FILES['formfile']['tmp_name'],
+                './uploads/' . $_FILES['formfile']['name'] 
+            ) ;
         }
     }
-    else
-    {
-        $errors_array = "Not allowed format" ;
-    } 
-
-    echo $errors_array === "" ? "<h3>No errors</h3>" : "<h3>$errors_array </h3>" ;
-
 } ?>
 Д.З. Обеспечить проверку загруженных файлов на допустимые расширения
 Загружать только те файлы, которые проходят проверку.

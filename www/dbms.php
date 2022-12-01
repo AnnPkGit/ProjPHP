@@ -1,4 +1,4 @@
-<?php 
+<?php
 try {
     $connection = new PDO( 
         "mysql:host=localhost;port=3306;dbname=pv011;charset=utf8", 
@@ -10,4 +10,3 @@ try {
 catch( PDOException $ex ) {
     $connection = null ;
 }
-?>

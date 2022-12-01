@@ -75,63 +75,63 @@ catch( PDOException $ex ) {
      нет N-типов (Юникод), кодировка текстовых полей задается 
       CHARSET-ом для таблицы в целом (либо для каждого поля отдельно)
      есть несколько "движков" в рамках  MySQL (MyISAM, InnoDB, ...)
+     наличие условий IF EXISTS / IF NOT EXISTS позволяющих
+      выполнять команду условно
+
      <br/>
      Результат запроса:
 <?php 
 $sql = <<<SQL
- CREATE TABLE IF NOT EXISTS demo (
+ CREATE TABLE  IF NOT EXISTS  demo (
     id      CHAR(36)   NOT NULL   PRIMARY KEY,
     val_int INT,
     val_str VARCHAR(128)
  ) Engine = InnoDB, DEFAULT CHARSET = utf8   
 SQL;
 try {
-    $connection->query($sql);
-    echo "Table 'demo' OK";
-
+    $connection->query( $sql ) ;
+    echo "Table 'demo' OK" ;
 }
 catch( PDOException $ex ) {
     echo $ex->getMessage() ;
-}
-?>
-</p>
+}?></p>
 <p>
     DML - язык манипулирования данными
-    <?php 
-    $x = random_int(1000 , 10000) ;
-    $s = bin2hex( random_bytes(8) ) ; 
-    // $sql = "INSERT INTO demo VALUES( UUID(), $x, '$s' ) " ;
-    try
-    {
-        // $connection->query( $sql);
-        echo "INSERT OK";
-    }
-    catch (PDOException $ex)
-    {
-        echo $ex->getMessage() ;
-    }
-    ?>
+<?php
+$x = random_int(1000, 10000) ;
+$s = bin2hex( random_bytes(8) ) ;
+$sql = "INSERT INTO demo VALUES( UUID(), $x, '$s' ) " ;
+try {
+    $connection->query( $sql ) ;
+    echo "INSERT OK" ;
+}
+catch( PDOException $ex ) {
+    echo $ex->getMessage() ;
+}?>
 </p>
 <p>
-<?php 
-    $sql = "SELECT * FROM `demo` " ;
-    try
-    {
-        $res = $connection->query( $sql ) ;
-        $rows = "";
-        while( $row = $res->fetch() ) {
-            //print_r( $row ) ;
-            $rows .= "<tr>
-            <td>{$row[0]}</td>
-            <td>{$row['val_int']}</td>
-            <td>{$row['val_str']}</td>
-            </tr>" ;
-        }
-        echo "<table border='1'><tr><th>row</th><th>int</th><th>str</th></tr>$rows</table>" ;
-    }
-    catch (PDOException $ex)
-    {
-        echo $ex->getMessage() ;
-    }
-    ?>
+    DML. SELECT
+<?php
+$sql = "SELECT * FROM `demo` " ;  // ``(MySQL) - аналог [] (MS SQL)
+try {
+    $res = $connection->query( $sql ) ;   // ~table (таблица рез-тов)
+    while( $row = $res->fetch( PDO::FETCH_ASSOC ) ) {   // строка таблицы
+        // print_r( $row ) ;  // данные дублируются - по индексу и по имени
+        echo "{$row['id']} {$row['val_str']} <br/>" ;
+    }  // PDO::FETCH_ASSOC - только с именами, 
+       // PDO::FETCH_NUM - только с индексами, 
+       // PDO::FETCH_BOTH - дублирование (по умолчанию)
+}
+catch( PDOException $ex ) {
+    echo $ex->getMessage() ;
+}?>   
 </p>
+Д.З. Реализовать запрос к БД на выдачу данных
+отобразить данные в виде таблицы (HTML)
+** предполагать, что количество и названия полей заранее не известны
++--------------------------------------+---------+------------------+
+| id                                   | val_int | val_str          |
++--------------------------------------+---------+------------------+
+| 3daf30f0-676d-11ed-a78a-14857fd97497 |    8320 | fc271461377e8525 |
+| 900ae3ec-676d-11ed-a78a-14857fd97497 |    1804 | c2ab8a241e0d5545 |
++--------------------------------------+---------+------------------+

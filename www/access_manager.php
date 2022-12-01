@@ -1,5 +1,7 @@
 <?php 
+$_CONTEXT = [] ;   // наши глобальные данные - контекст запроса
 $path = explode( '?', $_SERVER[ 'REQUEST_URI' ] )[0] ;     // адрес запроса - начало маршрутизации
+$_CONTEXT[ 'path' ] = $path ;   // сохраняем в контексте для доступа из других файлов
 /* Создание диспетчера доступа приводит к тому, что запросы к файлам,
    которые раньше автоматически "отдавал" Apache, теперь приходят
    к нам 
@@ -14,18 +16,28 @@ if( is_file( $local_path ) ) {          // запрос - существующи
 // echo "<pre>" ; print_r( $_GET ) ; exit ;
 
 $path_parts = explode( '/', $path ) ;    // ~split - разбивает строку по разделителю
+$_CONTEXT[ 'path_parts' ] = $path_parts ;
 
-//Middleware
+// ~MiddleWare
 include "dbms.php" ;
-if( empty ($connection) ) {
-   echo "DB error";
-   exit;
+if( empty( $connection ) ) {
+    echo "DB error"; 
+    exit ;
 }
+$_CONTEXT[ 'connection' ] = $connection ;
+
 include "auth.php" ;
 
 
-//View
-include "_layout.php" ;
+// ~Controllers
+$controller_file = "controllers/" . $path_parts[1] . "_controller.php" ;  // [1] - первая непустая часть (суть контроллер)
+if( is_file( $controller_file ) ) {
+    include $controller_file ;
+}
+else {
+    // ~View
+    include "_layout.php" ;
+}
 
 function flush_file( $filename ) {
     ob_clean() ;                               // очищаем буферизацию
@@ -41,8 +53,12 @@ function flush_file( $filename ) {
         case 'png' :
         case 'jpg' :
         case 'gif' :
+        case 'ico' :
             $content_type = "image/$ext" ; 
             break ;
+        case 'svg' :
+            $content_type = "image/svg+xml" ;
+            break ;  
 
         default:  return false ;               // недопустимое расширение - не отдаем файл
     }
@@ -54,4 +70,3 @@ function flush_file( $filename ) {
 // суперглобальные массивы - массивы, доступные из любой "точки" РНР
 // (в ф-циях не нужно дописывать global)
 // $_SERVER - основные данные от сервера
-?>

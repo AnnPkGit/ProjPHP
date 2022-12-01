@@ -4,64 +4,55 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP SITE</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>PV011</title>
 </head>
 <body>
-    <img src="/img/php.png" alt="logo" style ="width: 100px; height: 100px"/><br/>
-    <a href="/basics">Введение PHP</a><br/>
-    <a href="/fundamentals">Основы PHP</a><br/>
-    <a href="/layout">Шаблонизация</a><br/>
-    <a href="/home">Домой</a><br/>
-    <a href="/db">DB</a><br/>
-    <a href="/formdata">formdata</a><br/>
-    <a href="/regestration">Регистрация</a><br/>
-
-    <?php if( is_array( $_AUTH ) ) { ?>
-            <b>Hello</b>
+    <nav>
+        <img src="/img/php.png" alt="logo" class="logo" />
+        <a href="/basics">Введение в РНР</a>
+        <a href="/fundamentals">Основы РНР</a>
+        <a href="/layout">Шаблонизация</a>
+        <a href="/formdata">Данные форм</a>
+        <a href="/db">Работа с БД</a>
+        <a style="color:maroon" href="/email_test">E-mail</a>
+        
+        <?php if( is_array( $_CONTEXT[ 'auth_user' ] ) ) { ?>
+            <b>Hello, <?= $_CONTEXT[ 'auth_user' ][ 'name' ] ?></b>
+            <img class='user-avatar' src='/avatars/<?= empty($_CONTEXT['auth_user']['avatar']) ? 'no-avatar.png' : $_CONTEXT['auth_user']['avatar'] ?>' />
+            
+            <!-- Кнопка выхода из авторизованного режима - ссылка передающая параметр "logout" -->
+            <a class="logout" href="?logout">Log out</a>
         <?php } else {  ?>
             <form method="post">
                 <label><input name="userlogin" placeholder="login" /></label>
                 <label><input name="userpassw" type="password" /></label>
                 <button>Log in</button>
             </form>
-        <?php if( is_string( $_AUTH ) ) { echo $_AUTH ; } ?>
-    <?php }  ?>
+            <?php if( isset( $_CONTEXT[ 'auth_error' ] ) ) { echo $_CONTEXT[ 'auth_error' ] ; } ?>
+            <a href="/register">Регистрация</a>
+        <?php }  ?>
+    </nav>
 
+    <h1>PHP</h1>    
+
+    <!-- Render body -->
     <?php
-    switch( $path_parts[1] ) {
-    case '': 
-    case "home":
-    case 'index': 
-        include "index.php" ;
-        break ;
-
-    case 'fundamentals': 
-        include "fundamentals.php" ;
-        break ;
-
-    case 'layout': 
-        include "layout.php" ;
-        break ;
-
-    case 'basics': 
-        include "basics.php" ;
-        break ;
-    case 'db': 
-        include "db.php" ;
-        break ;
-    case 'formdata': 
-        include "formdata.php" ;
-        break ;
-    case 'regestration': 
-        include "regestration.php" ;
-        break ;
-    
-
-    default : 
-        echo "404" ;
+    if( $path_parts[1] === '' ) $path_parts[1] = 'index' ;
+    switch( $path_parts[1] ) {   // [1] - первая непустая часть (суть контроллер)
+        case 'index'        : 
+        case 'basics'       : 
+        case 'fundamentals' : 
+        case 'layout'       : 
+        case 'db'           :
+        case 'register'     :
+        case 'email_test'   :
+        case 'formdata'     : include "{$path_parts[1]}.php" ; break ;
+        default :
+            echo "404" ;
     }
     ?>
 <hr/>
-    <?php $x = 10 ; $i = 10 ; include "footer.php" ?>
+    <?php $x = 10 ; $i = 20 ; include "footer.php" ?>
 </body>
 </html>
