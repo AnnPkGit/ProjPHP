@@ -51,9 +51,12 @@ case 'POST' :
     if( isset( $_FILES['avatar'] ) ) {
         if( $_FILES['avatar']['error'] !== 0 ) { 
             $_SESSION[ 'reg_error' ]['avatar'] = "Broken avatar file" ;   
-            if( $_FILES['avatar']['size'] <= 0 ) {   
-                $_SESSION[ 'reg_error' ]['avatar'] = "File is too small" ;
-            }
+        }
+        if( $_FILES['avatar']['size'] <= 0 ) {   
+            $_SESSION[ 'reg_error' ]['avatar'] = "File is too small" ;
+        }
+        if(check_extencion($_FILES['avatar']['name']) === false){
+            $_SESSION[ 'reg_error' ]['avatar'] = "Wrong file format" ;
         }
     }
     else {
@@ -64,7 +67,7 @@ case 'POST' :
         $salt = md5( random_bytes(16) ) ;
         $pass = md5( $_POST['confirm'] . $salt ) ;
         $confirm_code = bin2hex( random_bytes(3) ) ;
-        $avatar = $_FILES['avatar']['name'];
+        $avatar = rand(1, 10000000) . $_FILES['avatar']['name'];
 
         $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`,`avatar`) 
                 VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code', '$avatar')" ;
@@ -75,7 +78,7 @@ case 'POST' :
 
             move_uploaded_file( 
             $_FILES['avatar']['tmp_name'],
-            './avatars/' . $_FILES['avatar']['name']
+            './avatars/' . $avatar
             ) ;          
         }
         catch( PDOException $ex ) {
@@ -93,4 +96,17 @@ case 'POST' :
     header( "Location: /" . $path_parts[1] ) ;
     break ;
 }
+
+function check_extencion($filename){
+    $pos = strrpos( $filename, '.' ) ;         
+    $ext = substr( $filename, $pos + 1 ) ;     
+    switch( $ext ) {                           
+        case 'png' :
+        case 'jpg' :
+        case 'gif' :
+            return true ;  
+        default:  return false ;               
+    }
+}
+
 ?>
