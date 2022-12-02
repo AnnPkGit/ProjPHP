@@ -21,7 +21,7 @@ case 'GET'  :
     include "_layout.php" ;  // ~return View
     break ;
 
-case 'POST' :
+case 'POST' :  
     // данные формы регистрации - обрабатываем
     if( empty( $_POST['login'] ) ) {
         $_SESSION[ 'reg_error' ]['login'] = "Empty login" ;
@@ -48,20 +48,38 @@ case 'POST' :
             $_SESSION[ 'reg_error' ]['login'] = "Login in use" ;
         }
     }
+    if( isset( $_FILES['avatar'] ) ) {
+        if( $_FILES['avatar']['error'] !== 0 ) { 
+            $_SESSION[ 'reg_error' ]['avatar'] = "Broken avatar file" ;   
+            if( $_FILES['avatar']['size'] <= 0 ) {   
+                $_SESSION[ 'reg_error' ]['avatar'] = "File is too small" ;
+            }
+        }
+    }
+    else {
+        $_SESSION[ 'reg_error' ]['avatar'] = "Choose avatar" ;
+    }
     if( empty( $_SESSION[ 'reg_error' ] ) ) {  // не было ошибок выше
         // $_SESSION[ 'reg_error' ] = "OK" ;
         $salt = md5( random_bytes(16) ) ;
         $pass = md5( $_POST['confirm'] . $salt ) ;
         $confirm_code = bin2hex( random_bytes(3) ) ;
-        $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`) 
-                VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code')" ;
+        $avatar = $_FILES['avatar']['name'];
+
+        $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`,`avatar`) 
+                VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code', '$avatar')" ;
         try {
             $prep = $connection->prepare( $sql ) ;
             $prep->execute( [ $_POST['login'], $_POST['userName'], $_POST['email'] ] ) ;
             $_SESSION[ 'reg_ok' ] = "Reg ok" ;
+
+            move_uploaded_file( 
+            $_FILES['avatar']['tmp_name'],
+            './avatars/' . $_FILES['avatar']['name']
+            ) ;          
         }
         catch( PDOException $ex ) {
-            $_SESSION[ 'reg_error' ] = $ex->getMessage() ;
+            $_SESSION[ 'reg_error' ]['exception'] = $ex->getMessage() ;
         }
     }
     else {  // были ошибки - сохраняем в сессии все введенные значения (кроме пароля)

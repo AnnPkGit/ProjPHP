@@ -1,7 +1,7 @@
 <div class="wrapper">
     <main>
-        <?php if( isset( $view_data['reg_error'] ) ) : ?>
-            <div class="reg-error"><?= $view_data['reg_error'] ?></div>
+        <?php if( isset( $view_data['reg_error']['exception'] ) ) : ?>
+            <div class="reg-error"><?= $view_data['reg_error']['exception'] ?></div>
         <?php endif ?>
 
         <?php if( isset( $view_data['reg_ok'] ) ) : ?>
@@ -11,7 +11,7 @@
         <div class="reg-form-container">
             <div class="reg-form">
                 <div class="reg-form-title">Create Account</div>
-                <form class="registerForm" method="post">
+                <form class="registerForm" method="post" enctype="multipart/form-data">
                     <div class="reg-form-control-wrapper">
                         <div class="reg-form-control">
                             <label for="login">Login</label>
@@ -44,6 +44,13 @@
                             <label for="email">Email</label>
                             <input type="email" name="email" required value='<?= (isset($view_data['email'])) ? $view_data['email'] : "" ?>' />
                             <p class="error"><?php echo isset( $view_data['reg_error']['email'] )  ? $view_data['reg_error']['email'] : "" ; ?></p>
+                        </div>
+                    </div>
+                    <div class="reg-form-control-wrapper">
+                        <div class="reg-form-control">
+                            <label for="avatar">Avatar</label>
+                            <input type="file" name="avatar" />
+                            <p class="error"><?php echo isset( $view_data['reg_error']['avatar'] )  ? $view_data['reg_error']['avatar'] : "" ; ?></p>
                         </div>
                     </div>
                     <button class="reg-button">Registration</button>

@@ -10,7 +10,7 @@
     height: 100vh;
 }
 .reg-form {
-    background: linear-gradient(to bottom,rgb(191, 170, 226) 50%,rgb(199, 97, 97) 100%);
+    background: linear-gradient(to bottom,rgb(191, 170, 226) 50%,rgb(144, 125, 199) 100%);
     border-radius: 5px;
     box-shadow: 0 2px 7px rgba(0, 0, 0, 0.8);
     overflow: hidden;
@@ -62,8 +62,8 @@
     background-color: rgb(233, 214, 232);
     border: rgb(233, 214, 232);
     border-radius: 4px;
-    color: rgb(196, 20, 64);
-    text-shadow: 1px 1px 1px rgb(255, 107, 107);
+    color: rgb(193, 177, 231);
+    text-shadow: 1px 1px 1px rgb(107, 117, 255);
     font-size: 16px;
     box-shadow: 1px 1px 2px rgb(255, 237, 186);
     padding: 10px;

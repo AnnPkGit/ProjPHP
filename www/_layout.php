@@ -9,12 +9,13 @@
 </head>
 <body>
     <nav>
-        <img src="/img/php.png" alt="logo" class="logo" />
-        <a href="/basics">Введение в РНР</a>
-        <a href="/fundamentals">Основы РНР</a>
-        <a href="/layout">Шаблонизация</a>
-        <a href="/formdata">Данные форм</a>
-        <a href="/db">Работа с БД</a>
+        <img src="/img/php.png" alt="logo" class="logo" /><br/>
+        <a href="/basics">Введение в РНР</a><br/>
+        <a href="/fundamentals">Основы РНР</a><br/>
+        <a href="/layout">Шаблонизация</a><br/>
+        <a href="/formdata">Данные форм</a><br/>
+        <a href="/db">Работа с БД</a><br/>
+        <a href="/index">Домой</a><br/>
         <a style="color:maroon" href="/email_test">E-mail</a>
         
         <?php if( is_array( $_CONTEXT[ 'auth_user' ] ) ) { ?>
