@@ -8,8 +8,39 @@ if( empty( $_GET[ 'code' ] ) ) {   // несанкционированный п�
     exit ;
 }
 
-if( isset( $_GET[ 'email' ] ) ) {  // переход по ссылке из письма
-
+if( isset( $_GET[ 'code' ] ) ) {  // переход по ссылке из письма
+    $confirm_to_search = $_GET['code'];
+    $email_to_search = "";
+    if (isset( $_GET[ 'email' ])) {
+        $email_to_search = $_GET['email'];
+    }
+    else {
+        $email_to_search  = $_CONTEXT['auth_user']['email'];
+    }
+    
+    $sql = "SELECT * FROM `users` WHERE `email` = '$email_to_search' AND `confirm` = '$confirm_to_search'" ;
+    try {
+        $res = $connection->query( $sql ) ;   
+        if($res->fetch( PDO::FETCH_ASSOC ) == NULL) {
+            echo "INVALID CONFIRM CODE" ;
+            exit;
+        }
+        else {
+           $sql_update = "UPDATE Users SET `confirm` = NULL WHERE `email`='$email_to_search' AND `confirm` = '$confirm_to_search'" ;
+            try {
+                $res_of_update = $connection->query($sql_update );
+            }
+            catch( PDOException $ex ) {
+                echo $ex->getMessage() ;
+                exit;
+            }
+        }
+    }
+    catch( PDOException $ex ) {
+        echo $ex->getMessage() ;
+        exit;
+    }
+    echo "EMAIL CONFIRMED";
 }
 else {   // б) со страницы ввода кода
 

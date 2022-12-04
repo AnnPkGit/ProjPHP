@@ -82,8 +82,8 @@ case 'POST' :
             Type code <strong>$confirm_code</strong> to confirm email<br/>
             Or follow next <a href='https://phpsite.local/confirm?code={$confirm_code}&email={$_POST['email']}'>link</a>" ) ;
 
-        $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`,`avatar`, `isemailconfirmed`) 
-                VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code', '$avatar', '0')" ;
+        $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`,`avatar`) 
+                VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code', '$avatar')" ;
         try {
             $prep = $connection->prepare( $sql ) ;
             $prep->execute( [ $_POST['login'], $_POST['userName'], $_POST['email'] ] ) ;
