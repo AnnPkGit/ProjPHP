@@ -16,7 +16,7 @@
         <a href="/formdata">Данные форм</a><br/>
         <a href="/db">Работа с БД</a><br/>
         <a href="/index">Домой</a><br/>
-        <a style="color:maroon" href="/email_test">E-mail</a>
+        <a style="color:maroon" href="/email_test">E-mail</a><br/>
         
         <?php if( is_array( $_CONTEXT[ 'auth_user' ] ) ) { ?>
             <b>Hello, <?= $_CONTEXT[ 'auth_user' ][ 'name' ] ?></b>

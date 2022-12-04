@@ -26,9 +26,9 @@ $mail->Password    = $smtp['pass'];
 $mail->SetFrom( $smtp['user'] ) ;
 
 $mail->IsHTML( true ) ;
-$mail->Subject = "PV011 site message" ;
-$mail->Body    = "Hello";
-$mail->AddAddress( "denniksam@gmail.com" ) ;
+$mail->Subject = "PHP site message from unicorn" ;
+$mail->Body    = "Hello by unicorn";
+$mail->AddAddress( include "ini/myEmail.php" ) ;
 if(!$mail->Send()) {
     echo "Mailer Error: " . $mail->ErrorInfo ;
 } else {
