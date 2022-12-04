@@ -62,12 +62,24 @@ case 'POST' :
     else {
         $_SESSION[ 'reg_error' ]['avatar'] = "Choose avatar" ;
     }
+    if( empty( $_SESSION[ 'reg_error' ] ) ) {
+        // подключаем фукнцию отправки почты
+        @include_once "helper/send_email.php" ;
+        if( ! function_exists( "send_email" ) ) {
+            $_SESSION[ 'reg_error' ] = "Inner error" ;
+        }
+    }
     if( empty( $_SESSION[ 'reg_error' ] ) ) {  // не было ошибок выше
         // $_SESSION[ 'reg_error' ] = "OK" ;
         $salt = md5( random_bytes(16) ) ;
         $pass = md5( $_POST['confirm'] . $salt ) ;
         $confirm_code = bin2hex( random_bytes(3) ) ;
         $avatar = rand(1, 10000000) . $_FILES['avatar']['name'];
+    
+        send_email( $_POST['email'], 
+            "pv011.local Email verification", 
+            "<b>Hello, {$_POST['userName']}</b><br/>
+            Type code <strong>$confirm_code</strong> to confirm email" ) ;
 
         $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`,`avatar`) 
                 VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code', '$avatar')" ;
