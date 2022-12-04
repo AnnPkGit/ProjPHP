@@ -77,12 +77,13 @@ case 'POST' :
         $avatar = rand(1, 10000000) . $_FILES['avatar']['name'];
     
         send_email( $_POST['email'], 
-            "pv011.local Email verification", 
+            "phpsite.local Email verification", 
             "<b>Hello, {$_POST['userName']}</b><br/>
-            Type code <strong>$confirm_code</strong> to confirm email" ) ;
+            Type code <strong>$confirm_code</strong> to confirm email<br/>
+            Or follow next <a href='https://phpsite.local/confirm?code={$confirm_code}&email={$_POST['email']}'>link</a>" ) ;
 
-        $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`,`avatar`) 
-                VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code', '$avatar')" ;
+        $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`,`avatar`, `isemailconfirmed`) 
+                VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code', '$avatar', '0')" ;
         try {
             $prep = $connection->prepare( $sql ) ;
             $prep->execute( [ $_POST['login'], $_POST['userName'], $_POST['email'] ] ) ;
