@@ -2,7 +2,8 @@
 // одна из задача контроллера - разделить работу по методам запроса
 // echo "<pre>" ; print_r( $_SERVER ) ;
 
-session_start() ;   // сессии - перед обращением к сессии обязательно. $_SESSION[] - формируется стартом
+// @ - подавление вывода ошибок
+@session_start() ;   // сессии - перед обращением к сессии обязательно. $_SESSION[] - формируется стартом
 switch( strtoupper( $_SERVER[ 'REQUEST_METHOD' ] ) ) {
 case 'GET'  :
     $view_data = [] ;
@@ -21,19 +22,20 @@ case 'GET'  :
     include "_layout.php" ;  // ~return View
     break ;
 
-case 'POST' :  
+case 'POST' :
+    // echo "<pre>" ; print_r( $_FILES ) ; exit ;
     // данные формы регистрации - обрабатываем
     if( empty( $_POST['login'] ) ) {
-        $_SESSION[ 'reg_error' ]['login'] = "Empty login" ;
+        $_SESSION[ 'reg_error' ] = "Empty login" ;
     }
     else if( empty( $_POST['userPassword1'] ) ) {
-        $_SESSION[ 'reg_error' ]['first_password']= "Empty userPassword1" ;
+        $_SESSION[ 'reg_error' ] = "Empty userPassword1" ;
     }
     else if( empty( $_POST['email'] ) ) {
-        $_SESSION[ 'reg_error' ]['email'] = "Empty email" ;
+        $_SESSION[ 'reg_error' ] = "Empty email" ;
     }
     else if( $_POST['userPassword1'] !== $_POST['confirm'] ) {
-        $_SESSION[ 'reg_error' ]['password']  = "Passwords mismatch" ;
+        $_SESSION[ 'reg_error' ] = "Passwords mismatch" ;
     } else {
         try {
             $prep = $connection->prepare( 
@@ -45,23 +47,49 @@ case 'POST' :
             $_SESSION[ 'reg_error' ] = $ex->getMessage() ;
         }
         if( $cnt > 0 ) {
-            $_SESSION[ 'reg_error' ]['login'] = "Login in use" ;
+            $_SESSION[ 'reg_error' ] = "Login in use" ;
+        }
+        
+        // Проверяем наличие аватарки и загружаем файл:
+        // Берем имя файла, отделяем расширение, проверяем на допустимые (изображения)
+        // сохраняем расширение, но меняем имя файла (генерируем случайно)
+        //  использовать переданные имена опасно (возможный конфликт - перезапись,
+        //  возможные DT-атаки со спецсимволами в именах файлов (../../) )
+        // Файлы храним в отдельной папке, их имена (с расширениями) - в БД
+
+        if( isset( $_FILES['avatar'] ) ) {  // наличие файлового поля на форме
+            if( $_FILES['avatar']['error'] == 0 && $_FILES['avatar']['size'] != 0 ) {
+                // есть переданный файл
+                $dot_position = strrpos( $_FILES['avatar']['name'], '.' ) ;  // strRpos ~ lastIndexOf
+                if( $dot_position == -1 ) {  // нет расширения у файла
+                    $_SESSION[ 'reg_error' ] = "File without type not supported" ;
+                }
+                else {
+                    $extension = substr( $_FILES['avatar']['name'], $dot_position ) ;  // расширение файла (с точкой ".png")
+                    /* Загрузка аватарки:
+                        v проверить расширение файла на допустимый перечень
+                        v сгенерировать случайное имя файла, сохранить расширение
+                        v загрузить файл в папку www/avatars
+                        его имя добавить в параметры SQL-запроса и передать в БД
+                    */
+                    // echo $extension ; exit ;
+                    if( ! array_search( $extension, ['.jpg', '.png', '.jpeg', '.svg'] ) ) {
+                        $_SESSION[ 'reg_error' ] = "File extension '{$extension}' not supported" ;
+                    }
+                    else {
+                        $avatar_path = 'avatars/' ;
+                        do {
+                            $avatar_saved_name = bin2hex( random_bytes(8) ) . $extension ;
+                        } while( file_exists( $avatar_path . $avatar_saved_name ) ) ;
+                        if( ! move_uploaded_file( $_FILES['avatar']['tmp_name'], $avatar_path . $avatar_saved_name ) ) {
+                            $_SESSION[ 'reg_error' ] = "File (avatar) uploading error" ;
+                        }
+                    }
+                }
+            }
         }
     }
-    if( isset( $_FILES['avatar'] ) ) {
-        if( $_FILES['avatar']['error'] !== 0 ) { 
-            $_SESSION[ 'reg_error' ]['avatar'] = "Broken avatar file" ;   
-        }
-        if( $_FILES['avatar']['size'] <= 0 ) {   
-            $_SESSION[ 'reg_error' ]['avatar'] = "File is too small" ;
-        }
-        if(check_extencion($_FILES['avatar']['name']) === false){
-            $_SESSION[ 'reg_error' ]['avatar'] = "Wrong file format" ;
-        }
-    }
-    else {
-        $_SESSION[ 'reg_error' ]['avatar'] = "Choose avatar" ;
-    }
+
     if( empty( $_SESSION[ 'reg_error' ] ) ) {
         // подключаем фукнцию отправки почты
         @include_once "helper/send_email.php" ;
@@ -69,33 +97,35 @@ case 'POST' :
             $_SESSION[ 'reg_error' ] = "Inner error" ;
         }
     }
+    
     if( empty( $_SESSION[ 'reg_error' ] ) ) {  // не было ошибок выше
         // $_SESSION[ 'reg_error' ] = "OK" ;
         $salt = md5( random_bytes(16) ) ;
         $pass = md5( $_POST['confirm'] . $salt ) ;
         $confirm_code = bin2hex( random_bytes(3) ) ;
-        $avatar = rand(1, 10000000) . $_FILES['avatar']['name'];
-    
+
+        // отправляем код на указанную почту        
         send_email( $_POST['email'], 
-            "phpsite.local Email verification", 
+            "pv011.local Email verification", 
             "<b>Hello, {$_POST['userName']}</b><br/>
             Type code <strong>$confirm_code</strong> to confirm email<br/>
-            Or follow next <a href='https://phpsite.local/confirm?code={$confirm_code}&email={$_POST['email']}'>link</a>" ) ;
+            Or follow next <a href='https://pv011.local/confirm?code={$confirm_code}&email={$_POST['email']}'>link</a>" ) ;
 
         $sql = "INSERT INTO Users(`id`,`login`,`name`,`salt`,`pass`,`email`,`confirm`,`avatar`) 
-                VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code', '$avatar')" ;
+                VALUES(UUID(),?,?,'$salt','$pass',?,'$confirm_code',?)" ;
         try {
             $prep = $connection->prepare( $sql ) ;
-            $prep->execute( [ $_POST['login'], $_POST['userName'], $_POST['email'] ] ) ;
+            $prep->execute( [ 
+                $_POST['login'], 
+                $_POST['userName'], 
+                $_POST['email'],
+                isset( $avatar_saved_name ) ? $avatar_saved_name : null
+            ] ) ;
             $_SESSION[ 'reg_ok' ] = "Reg ok" ;
-
-            move_uploaded_file( 
-            $_FILES['avatar']['tmp_name'],
-            './avatars/' . $avatar
-            ) ;          
+       
         }
         catch( PDOException $ex ) {
-            $_SESSION[ 'reg_error' ]['exception'] = $ex->getMessage() ;
+            $_SESSION[ 'reg_error' ] = $ex->getMessage() ;
         }
     }
     else {  // были ошибки - сохраняем в сессии все введенные значения (кроме пароля)
@@ -109,17 +139,7 @@ case 'POST' :
     header( "Location: /" . $path_parts[1] ) ;
     break ;
 }
-
-function check_extencion($filename){
-    $pos = strrpos( $filename, '.' ) ;         
-    $ext = substr( $filename, $pos + 1 ) ;     
-    switch( $ext ) {                           
-        case 'png' :
-        case 'jpg' :
-        case 'gif' :
-            return true ;  
-        default:  return false ;               
-    }
-}
-
-?>
+/*
+Д.З. Реализовать валидацию эл. почты пользователя
+стилизовать вывод сообщения об успешной регистрации
+*/

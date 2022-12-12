@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css" />
-    <title>PV011</title>
+    <title>PV011  <?= $_CONTEXT['page_title'] ?? '' ?></title>
 </head>
 <body>
     <nav>
@@ -35,6 +35,10 @@
         case 'register'     :
         case 'email_test'   :
         case 'formdata'     : include "{$path_parts[1]}.php" ; break ;
+
+        case 'shop'    :
+        case 'profile' : include "views/{$path_parts[1]}.php" ; break ;
+
         default :
             echo "404" ;
     }

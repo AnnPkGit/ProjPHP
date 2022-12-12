@@ -1,13 +1,12 @@
-<?php 
+<?php
 
-echo createFooter();
+echo "<b>This is a footer $x </b>" . $i ;
 
-function createFooter(){
-    global $x;
-    global $i;
-    
-    $year = date("Y");
-    return "<b>This is a footer $x   $year </b>" .$i;
-}
 
-?>
+
+/*
+Д.З. В файле footer.php реализовать формирование строки футера
+при помощи функции. Использовать переменные, определенные в 
+"родительском" файле basics.php
+* вывести (copy) 2020 - текущий год 
+*/

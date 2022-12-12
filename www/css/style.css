@@ -1,5 +1,5 @@
 .logo {
-    max-height: 100px;
+    max-height: 50px;
 }
 /* ------------------------------- */
 /* Style for register.php */
@@ -10,7 +10,7 @@
     height: 100vh;
 }
 .reg-form {
-    background: linear-gradient(to bottom,rgb(191, 170, 226) 50%,rgb(144, 125, 199) 100%);
+    background: linear-gradient(to bottom,rgb(179, 167, 200) 50%,rgb(97, 199, 189) 100%);
     border-radius: 5px;
     box-shadow: 0 2px 7px rgba(0, 0, 0, 0.8);
     overflow: hidden;
@@ -19,8 +19,8 @@
 }
 .reg-form-title {
     border-bottom: 1px solid #f0f0f0;
-    background-color: rgb(250, 194, 199);
-    text-shadow: 1px 1px 1px rgb(87, 25, 0);
+    background-color: rgb(157, 184, 198);
+    text-shadow: 1px 1px 1px blue;
     color: white;
     padding: 20px 40px;
     font-size: 30px;
@@ -47,7 +47,7 @@
     font-weight: bold;
     margin-bottom: 5px;
     text-align: center;
-    text-shadow: 1px 1px 1px rgb(87, 25, 0);
+    text-shadow: 1px 1px 1px black;
 }
 .reg-form-control-wrapper input {
     border: 2px solid lightgray;
@@ -59,27 +59,75 @@
     width: 100%;
 }
 .registerForm .reg-button {
-    background-color: rgb(233, 214, 232);
-    border: rgb(233, 214, 232);
+    background-color: rgb(37, 123, 134);
+    border: 2px solid #4169E1;
     border-radius: 4px;
-    color: rgb(193, 177, 231);
-    text-shadow: 1px 1px 1px rgb(107, 117, 255);
+    color: aliceblue;
     font-size: 16px;
-    box-shadow: 1px 1px 2px rgb(255, 237, 186);
     padding: 10px;
     width: 100%;
 }
 .registerForm .reg-button:hover {
     background-color: aliceblue;
     cursor: pointer;
-    color: rgb(204, 172, 183);
+    color: rgb(37, 123, 134);
 }
 .reg-error {
     color: fuchsia;
     font-weight: 900;
 }
+.user-avatar {
+    border-radius: 40%;
+    max-height: 40px;
+    max-width: 50px;
+}
 
-.error {
-   color: red;
-   text-shadow: 1px 1px 2px rgb(177, 0, 0);
+/* Style for profile.php */
+.profile-container {
+    align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+    padding-top: 30px;
+}
+.profile-avatar {
+    border: 1px solid black;
+    border-radius: 50%;
+    box-shadow: 0px 0px 15px #5e5373;
+    height: 150px;
+    width: 150px;
+}
+.profile-name {
+    color:#5e5373;
+    margin-top: 0px;
+    text-shadow: 1px 1px 1px black;
+}
+.profile-table {
+    border: 2px solid black;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+.profile-table tr td {
+    border: 1px solid black;
+    padding: 5px;
+}
+.profile-table tr td:first-child {
+    background-color: #beb4d3;
+}
+.profile-input {
+    background-color: transparent;
+    font-weight: 600;
+    padding: 5px;
+}
+.update-profile-btn {
+    border: 1px solid black;
+    background-color: transparent;
+    box-shadow: 0px 0px 5px black;
+    font-weight: bold;
+    margin: 10px;
+    padding: 10px;
+}
+.update-profile-btn:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 5px black;
 }
