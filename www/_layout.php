@@ -9,13 +9,14 @@
 </head>
 <body>
     <nav>
-        <img src="/img/php.png" alt="logo" class="logo" /><br/>
+    <img src="/img/php.png" alt="logo" class="logo" /><br/>
         <a href="/basics">Введение в РНР</a><br/>
         <a href="/fundamentals">Основы РНР</a><br/>
         <a href="/layout">Шаблонизация</a><br/>
         <a href="/formdata">Данные форм</a><br/>
         <a href="/db">Работа с БД</a><br/>
         <a href="/index">Домой</a><br/>
+        <a href="/shop">Магаз</a><br/>
         <a style="color:maroon" href="/email_test">E-mail</a><br/>
         
         <?php include "_auth.php" ?>
