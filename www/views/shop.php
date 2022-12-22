@@ -41,11 +41,12 @@
         <img src="/images/<?= $product['image'] ?>" />
     </div>
     <h4><?= $product['name'] ?></h4>
-    <h5><?= $product['descr'] ?></h5>
+    <h5><?= $product['descr'] === '' ? 'Нет описания' : $product['descr'] ?></h5>
     <b><?= $product['price'] ?></b>
     <?php if( ! empty( $product['discount'] ) ) : ?>
         (<i><?= $product['discount'] ?></i>)
     <?php endif ?>
+    <h5><?= $product['rating']  == NULL ? 'Нет оценок' : '' ?></h5>
     <div class="rating-area">
         <span>(<?= $product['rating'] ?>)</span>
         <input type="radio" id="star-5<?=$product['id']?>" name="rating<?=$product['id']?>" value="5" <?= ($product['rating'] > 4) ? 'checked' : '' ?> />
@@ -101,7 +102,7 @@
 </div>
 
 
-
+<?php if( isset($_CONTEXT[ 'auth_user' ][ 'name' ]) && $_CONTEXT[ 'auth_user' ][ 'name' ] === "Root Administrator") : ?>
 <form method="post" enctype="multipart/form-data" >
     <input type="text"   name="name"     placeholder="Название" /><br/>
     <textarea            name="descr"    placeholder="Описание" ></textarea><br/>
@@ -110,6 +111,7 @@
     <input type="file"   name="image"  /><br/>
     <button>Добавить</button>
 </form>
+<?php endif ?>
 
 <?= $view_data[ 'add_error' ] ?? ''  ?>
 
