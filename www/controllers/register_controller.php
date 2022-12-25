@@ -122,7 +122,6 @@ case 'POST' :
                 isset( $avatar_saved_name ) ? $avatar_saved_name : null
             ] ) ;
             $_SESSION[ 'reg_ok' ] = "Reg ok" ;
-       
         }
         catch( PDOException $ex ) {
             $_SESSION[ 'reg_error' ] = $ex->getMessage() ;
